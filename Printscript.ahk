@@ -33,24 +33,24 @@ messages := Map(
                 }
             }
 
-            ;Send("^{End}")
-            ;Sleep 500
-            ;Send("^p")
-            ;WinWaitActive("ahk_class  #32770")
-            ;Sleep 200
-            ;Send("{Tab 7}")
-            ;Sleep 300
-            ;Send("{Right 2}")
-            ;Sleep 300
-            ;Send ("{Tab}")
-            ;Sleep 200
-            ;Send ("^c")
-            ;pages := A_Clipboard
-            ;Sleep 200                           
-            ;Send ("1 - " pages - 1)
-            ;Sleep 200
-            ;Send ("{Enter}")
-            ;WinWaitClose("ahk_class #32770")
+            Send("^{End}")
+            Sleep 500
+            Send("^p")
+            WinWaitActive("ahk_class  #32770")
+            Sleep 200
+            Send("{Tab 7}")
+            Sleep 300
+            Send("{Right 2}")
+            Sleep 300
+            Send ("{Tab}")
+            Sleep 200
+            Send ("^c")
+            pages := A_Clipboard
+            Sleep 200                           
+            Send ("1 - " pages - 1)
+            Sleep 200
+            Send ("{Enter}")
+            WinWaitClose("ahk_class #32770")
             print_count++
             Send ("^{F4}")
             WinWaitClose(winTitle)
