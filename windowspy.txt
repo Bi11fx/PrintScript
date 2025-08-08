@@ -1,0 +1,20 @@
+Drucken
+ahk_class #32770
+ahk_exe Acrobat.exe
+ahk_pid 17396
+ahk_id 395784
+
+
+Vorgang wird bearbeitet
+ahk_class #32770
+ahk_exe Acrobat.exe
+ahk_pid 17396
+ahk_id 853948
+
+
+
+PDF-Datei speichern unter
+ahk_class #32770
+ahk_exe Acrobat.exe
+ahk_pid 17952
+ahk_id 264576

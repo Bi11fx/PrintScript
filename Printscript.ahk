@@ -24,6 +24,7 @@ messages := Map(
         print_count := 0
         loop {
             winTitle := WinGetTitle("A")
+            proc := WinGetProcessName("A")
             if (!RegExMatch(winTitle, "\.pdf.*Adobe\xA0Acrobat")) {
                 if (print_count = 0) {
                     throw Error(messages["msg_error"][lang])
@@ -32,28 +33,37 @@ messages := Map(
                     break
                 }
             }
-
+            ;empty clipboard
+            A_Clipboard := ""
+            RegExMatch(winTitle, ".*\.pdf", &docTitle)
             Send("^{End}")
             Sleep 500
             Send("^p")
-            WinWaitActive("ahk_class  #32770")
+            WinWaitActive("ahk_class #32770 ahk_exe " . proc)
+            dialogID := WinGetID("A")
             Sleep 200
             Send("{Tab 7}")
             Sleep 300
             Send("{Right 2}")
             Sleep 300
             Send ("{Tab}")
-            Sleep 200
+            Sleep 500
             Send ("^c")
+            ;wait until the page-number is in clipboard
+            ClipWait(2)
             pages := A_Clipboard
-            Sleep 200                           
+            Sleep 500                           
             Send ("1 - " pages - 1)
-            Sleep 200
+            Sleep 500
             Send ("{Enter}")
-            WinWaitClose("ahk_class #32770")
             print_count++
-            Send ("^{F4}")
+            WinWaitClose("ahk_class  #32770 ahk_exe " . proc)
+            WinWaitActive("ahk_class  #32770 ahk_exe " . proc)
+            WinWaitClose("ahk_class  #32770 ahk_exe " . proc)
+            Sleep 500
+            Send("^{F4}")
             WinWaitClose(winTitle)
+            Sleep 200
         }
     MsgBox print_count . " " . messages["msg_success"][lang], messages["title_success"][lang], "Iconi"
     }
