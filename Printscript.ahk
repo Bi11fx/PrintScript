@@ -16,20 +16,62 @@ messages := Map(
     "msg_success", Map("de", "Dokumente erfolgreich gedruckt!", "en", "documents printed successfully!"),
     "title_success", Map("de", "Das hat prima funktioniert!", "en", "This worked like a charm!")
 )
-    
-
 
 ^PrintScreen:: {
+    printDocuments(0, 1)
+}    
+
+^!PrintScreen:: {
+    try{
+        winTitle := WinGetTitle("A")
+        ;get process name of the active window (e.g. acrobat or acrobat reader)
+        proc := WinGetProcessName("A")
+        if (!RegExMatch(winTitle, "\.pdf.*Adobe\xA0Acrobat")) {
+            throw Error(messages["msg_error"][lang])
+        }
+        MyInput := Gui(, "Settings")
+        MyInput.MarginX := 100
+        MyInput.MarginY := 20
+        MyInput.AddText("x25 y20", "Anzahl Dokumente:")
+        MyInput.AddText(, "Seiten nicht drucken:")
+        Pages := MyInput.AddEdit("ys-5 x+30 w50 Number")
+        Skip := MyInput.AddEdit("w50 Number")
+        MyInput.Add("Button","Default w80", "OK").OnEvent("Click", OK_Click)
+        MyInput.Show()
+
+        OK_Click(*) {
+            MyInput.Hide()
+            MsgBox proc
+            WinWaitActive("ahk_exe " . proc,,5)
+            printDocuments(Pages.Value, Skip.Value)
+        }
+    }
+    catch Error as fail{
+        MsgBox fail.Message, messages["title_error"][lang], "IconX"
+    }
+}
+
+
+
+
+
+printDocuments(pdfTotal, skipLastPages) {
     try {
         print_count := 0
         loop {
             winTitle := WinGetTitle("A")
+            ;get process name of the active window (e.g. acrobat or acrobat reader)
             proc := WinGetProcessName("A")
             if (!RegExMatch(winTitle, "\.pdf.*Adobe\xA0Acrobat")) {
                 if (print_count = 0) {
                     throw Error(messages["msg_error"][lang])
                 }
                 else {
+                    break
+                }
+            }
+            if (!pdfTotal = 0) {
+                if (print_count = pdfTotal) {
                     break
                 }
             }
@@ -48,12 +90,15 @@ messages := Map(
             Sleep 300
             Send ("{Tab}")
             Sleep 500
+            ;copy how many pages are in the document
             Send ("^c")
             ;wait until the page-number is in clipboard
             ClipWait(2)
-            pages := A_Clipboard
-            Sleep 500                           
-            Send ("1 - " pages - 1)
+            pagesTotal := A_Clipboard
+            Sleep 500
+            ;determine how many pages to print
+            printPages := PagesToPrint(pagesTotal, skipLastPages)
+            Send (printPages)
             Sleep 500
             Send ("{Enter}")
             print_count++
@@ -69,5 +114,15 @@ messages := Map(
     }
     catch Error as fail{
         MsgBox fail.Message, messages["title_error"][lang], "IconX"
+    }
+}
+
+;function to determine how many pages to print
+PagesToPrint(total, skip) {
+    if (total - skip <= 1){
+        return "1"
+    }
+    else {
+        return "1 - " . total - skip
     }
 }
