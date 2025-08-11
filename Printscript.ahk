@@ -17,10 +17,12 @@ messages := Map(
     "title_success", Map("de", "Das hat prima funktioniert!", "en", "This worked like a charm!")
 )
 
+;Default-Print: Print all documents but don't print last page of each document
 ^PrintScreen:: {
     printDocuments(0, 1)
 }    
 
+;Custom-Print with dialog for entering the number of documents and number of pages to not to print
 ^!PrintScreen:: {
     try{
         winTitle := WinGetTitle("A")
@@ -41,9 +43,12 @@ messages := Map(
 
         OK_Click(*) {
             MyInput.Hide()
-            MsgBox proc
+            ;if Edit empty then 0, else Edit.Value
+            pages := (Pages.Value = "") ? 0 : Pages.Value
+            skip := (Skip.Value = "") ? 0 : Skip.Value
+            
             WinWaitActive("ahk_exe " . proc,,5)
-            printDocuments(Pages.Value, Skip.Value)
+            printDocuments(pages, skip)
         }
     }
     catch Error as fail{
@@ -100,15 +105,32 @@ printDocuments(pdfTotal, skipLastPages) {
             printPages := PagesToPrint(pagesTotal, skipLastPages)
             Send (printPages)
             Sleep 500
-            Send ("{Enter}")
+            ;if it is the first document to print, wait for the user to hit Print
+            if (print_count = 0) {
+                MsgBox "Bitte die Druckeinstellungen überprüfen mit Drucken bestätigen!"
+            }
+            else {
+                Send ("{Enter}")
+            }
             print_count++
+            ;Wait until print dialog has been closed
             WinWaitClose("ahk_class  #32770 ahk_exe " . proc)
+            ;Wait until printing progess has been opened
             WinWaitActive("ahk_class  #32770 ahk_exe " . proc)
+            ;Wait until printing progress has been closed
             WinWaitClose("ahk_class  #32770 ahk_exe " . proc)
             Sleep 500
+            ;Close the actual document
             Send("^{F4}")
             WinWaitClose(winTitle)
             Sleep 200
+            ;wenn Anzahl an Dokumenten gedruckt - break
+            ;MsgBox pdfTotal . " " . print_count
+            if (pdfTotal > 0 and print_count = pdfTotal) {
+                break
+            }
+            ;Wait until Adobe Acrobat (Reader) has focus
+            WinWaitActive("ahk_exe" . proc)
         }
     MsgBox print_count . " " . messages["msg_success"][lang], messages["title_success"][lang], "Iconi"
     }
