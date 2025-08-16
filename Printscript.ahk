@@ -9,12 +9,18 @@ switch langID {
     Default: lang := "en"
 }
 
-; Messages in the different languages
-messages := Map(
+; text in the different languages
+translation := Map(
     "msg_error", Map("de", "Kein PDF-Dokument geöffnet oder nicht im Fokus!", "en", "No PDF document opened or not in focus!"),
     "title_error", Map("de", "Ups, da ist was schiefgelaufen!", "en", "Oops, there went something wrong!"),
     "msg_success", Map("de", "Dokumente erfolgreich gedruckt!", "en", "documents printed successfully!"),
-    "title_success", Map("de", "Das hat prima funktioniert!", "en", "This worked like a charm!")
+    "title_success", Map("de", "Das hat prima funktioniert!", "en", "This worked like a charm!"),
+    "msg_check", Map("de", "Bitte die Druckeinstellungen überprüfen und mit `"Drucken`" bestätigen.`nDas Script wird dann ihren Druckauftrag automatisch abarbeiten.", "en", "Please check the print settings and confirm with `"Print`".`nThe script will then process your print job automatically."),
+    "title_check", Map("de", "Durckeinstellungen prüfen", "en", "Check Print Settings"),
+    "dialog_title", Map("de", "Anzahl Dokumente & wegzulassender Endseiten", "en", "Number of Documents & End Pages to Skip"),
+    "dialog_headline", Map("de", "Druckeinstellungen:", "en", "Print Settings"),
+    "dialog_lbl_page", Map("de", "Anzahl Dokumente:", "en", "Number of Documents:"),
+    "dialog_lbl_skip", Map("de", "Endseiten überspringen:", "en", "Skip Endpages:")  
 )
 
 ;Default-Print: Print all documents but don't print last page of each document
@@ -29,18 +35,16 @@ messages := Map(
         ;get process name of the active window (e.g. acrobat or acrobat reader)
         proc := WinGetProcessName("A")
         if (!RegExMatch(winTitle, "\.pdf.*Adobe\xA0Acrobat")) {
-            throw Error(messages["msg_error"][lang])
+            throw Error(translation["msg_error"][lang])
         }
-        MyInput := Gui(, "Settings")
-        MyInput.MarginX := 100
-        MyInput.MarginY := 20
-        MyInput.AddText("x25 y20", "Anzahl Dokumente:")
-        MyInput.AddText(, "Seiten nicht drucken:")
-        Pages := MyInput.AddEdit("ys-5 x+30 w50 Number")
+        MyInput := Gui(, translation["dialog_title"][lang])
+        MyInput.AddText("x40 y20", translation["dialog_headline"][lang])
+        MyInput.AddText("Section", translation["dialog_lbl_page"][lang])
+        MyInput.AddText(, translation["dialog_lbl_skip"][lang])
+        Pages := MyInput.AddEdit("ys-5 x+50 w50 Number")
         Skip := MyInput.AddEdit("w50 Number")
-        MyInput.Add("Button","Default w80", "OK").OnEvent("Click", OK_Click)
-        MyInput.Show()
-
+        MyInput.AddButton("Default w80 x185 y115", "OK").OnEvent("Click", OK_Click)
+        MyInput.Show("w450")
         OK_Click(*) {
             MyInput.Hide()
             ;if Edit empty then 0, else Edit.Value
@@ -52,7 +56,7 @@ messages := Map(
         }
     }
     catch Error as fail{
-        MsgBox fail.Message, messages["title_error"][lang], "IconX"
+        MsgBox fail.Message, translation["title_error"][lang], "IconX"
     }
 }
 
@@ -69,7 +73,7 @@ printDocuments(pdfTotal, skipLastPages) {
             proc := WinGetProcessName("A")
             if (!RegExMatch(winTitle, "\.pdf.*Adobe\xA0Acrobat")) {
                 if (print_count = 0) {
-                    throw Error(messages["msg_error"][lang])
+                    throw Error(translation["msg_error"][lang])
                 }
                 else {
                     break
@@ -107,7 +111,7 @@ printDocuments(pdfTotal, skipLastPages) {
             Sleep 500
             ;if it is the first document to print, wait for the user to hit Print
             if (print_count = 0) {
-                MsgBox "Bitte die Druckeinstellungen überprüfen mit Drucken bestätigen!"
+                MsgBox translation["msg_check"][lang], translation["title_check"][lang], "Iconi"
             }
             else {
                 Send ("{Enter}")
@@ -132,10 +136,10 @@ printDocuments(pdfTotal, skipLastPages) {
             ;Wait until Adobe Acrobat (Reader) has focus
             WinWaitActive("ahk_exe" . proc)
         }
-    MsgBox print_count . " " . messages["msg_success"][lang], messages["title_success"][lang], "Iconi"
+    MsgBox print_count . " " . translation["msg_success"][lang], translation["title_success"][lang], "Iconi"
     }
     catch Error as fail{
-        MsgBox fail.Message, messages["title_error"][lang], "IconX"
+        MsgBox fail.Message, translation["title_error"][lang], "IconX"
     }
 }
 
