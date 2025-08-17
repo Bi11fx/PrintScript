@@ -1,4 +1,11 @@
-﻿#Requires AutoHotkey v2.0
+﻿; PrintScript - Automated PDF Printing
+; Copyright (c) 2025 Bi11fx
+; Licensed under the GNU GPL v3.0
+; See LICENSE file for details
+
+
+
+#Requires AutoHotkey v2.0
 
 langID := DllCall("GetUserDefaultUILanguage")   ;get used Language of the System / User
 
