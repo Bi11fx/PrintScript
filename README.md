@@ -6,7 +6,9 @@
 
 ## English
 
-**PrintScript** is a compiled AutoHotkey V2 tool that automates printing of PDF documents opened in Adobe Acrobat (Reader). No installation of AutoHotkey is required.
+**PrintScript** is a compiled AutoHotkey V2 tool that automates printing of PDF documents opened in Adobe Acrobat (Reader). AutoHotkey **installation is not required**.
+
+### [Download Release](Link)
 
 ### Features
 
@@ -42,7 +44,9 @@
 
 ## Deutsch
 
-**PrintScript** ist ein kompiliertes AutoHotkey V2 Tool, das das Drucken von PDF-Dokumenten in Adobe Acrobat (Reader) automatisiert. Eine Installation von AutoHotkey ist **nicht erforderlich**.
+**PrintScript** ist ein kompiliertes AutoHotkey V2 Tool, das das Drucken von PDF-Dokumenten in Adobe Acrobat (Reader) automatisiert. AutoHotkey **Installation ist nicht erforderlich**.
+
+### [Download Release](Link)
 
 ### Funktionen
 
