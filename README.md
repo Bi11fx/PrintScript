@@ -1,7 +1,4 @@
-<p align="left">
-  <img src="./images/Iconarchive-Incognito-Animal-2-Turtle-100.png" alt="PrintScriptTurtle" width="100" style="vertical-align: middle;">
-  <span style="font-size: 2em; font-weight: bold;">PrintScript - Automated PDF Printing</span>
-</p>
+# ![Icon](images/Iconarchive-Incognito-Animal-2-Turtle-100.png) PrintScript - Automated PDF Printing
 
 |PayPal EUR |  PayPal USD |
 |:---:|:---:|
