@@ -41,7 +41,7 @@ translation := Map(
         winTitle := WinGetTitle("A")
         ;get process name of the active window (e.g. acrobat or acrobat reader)
         proc := WinGetProcessName("A")
-        if (!RegExMatch(winTitle, "\.pdf.*Adobe\xA0Acrobat")) {
+        if (!RegExMatch(winTitle, ".*\s-\sAdobe.Acrobat.*")) {
             throw Error(translation["msg_error"][lang])
         }
         MyInput := Gui(, translation["dialog_title"][lang])
@@ -78,7 +78,7 @@ printDocuments(pdfTotal, skipLastPages) {
             winTitle := WinGetTitle("A")
             ;get process name of the active window (e.g. acrobat or acrobat reader)
             proc := WinGetProcessName("A")
-            if (!RegExMatch(winTitle, "\.pdf.*Adobe\xA0Acrobat")) {
+            if (!RegExMatch(winTitle, ".*\s-\sAdobe.Acrobat.*")) {
                 if (print_count = 0) {
                     throw Error(translation["msg_error"][lang])
                 }
